@@ -1,34 +1,64 @@
-// Connect to Postgres using the node-postgres package
+const { Pool } = require('pg');
 
-const POOL = require('pg').Pool
-
-const pool = new POOL({
+const pool = new Pool({
   user: 'me',
   host: 'localhost',
   database: 'favlinks',
   password: 'password',
   port: 5432,
-})
-
-// Create all the functions that will be our request handlers in our express server
-
-// Create a new link in the db
-
-// Read all the data from db
+});
 
 const getLinks = (req, res) => {
   pool.query('SELECT * FROM links ORDER BY id ASC', (error, result) => {
     if (error) {
-      throw error
+      throw error;
     }
-    res.status(200).json(result.rows)
-  })
-}
+    res.status(200).json(result.rows);
+  });
+};
 
-// Update link in the db
+const createLink = (req, res) => {
+  const { title, url } = req.body;
+  pool.query(
+    'INSERT INTO links (title, url) VALUES ($1, $2)',
+    [title, url],
+    (error, result) => {
+      if (error) {
+        throw error;
+      }
+      res.status(201).send('Link created successfully');
+    }
+  );
+};
 
-// Delete link in the db
+const updateLink = (req, res) => {
+  const linkId = req.params.id;
+  const { title, url } = req.body;
+  pool.query(
+    'UPDATE links SET title = $1, url = $2 WHERE id = $3',
+    [title, url, linkId],
+    (error, result) => {
+      if (error) {
+        throw error;
+      }
+      res.status(200).send('Link updated successfully');
+    }
+  );
+};
+
+const deleteLink = (req, res) => {
+  const linkId = req.params.id;
+  pool.query('DELETE FROM links WHERE id = $1', [linkId], (error, result) => {
+    if (error) {
+      throw error;
+    }
+    res.status(200).send('Link deleted successfully');
+  });
+};
 
 module.exports = {
   getLinks,
-}
+  createLink,
+  updateLink,
+  deleteLink,
+};
