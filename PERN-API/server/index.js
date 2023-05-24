@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
 // CREATE - add data to db
 app.get('/links', db.getLinks);
 // READ - get data from db
+app.post('/links', db.createLink); // Create - Add a new link
 app.get('/links', db.getLinks)
 // UPDATE - update data in db
 // DELETE - remove data from db
