@@ -8,6 +8,7 @@ const pool = new Pool({
   port: 5432,
 });
 
+
 const getLinks = (req, res) => {
   pool.query('SELECT * FROM links ORDER BY id ASC', (error, result) => {
     if (error) {
@@ -62,3 +63,4 @@ module.exports = {
   updateLink,
   deleteLink,
 };
+//With the corrected code, you have the getLinks, createLink, updateLink, and deleteLink functions defined as request handlers in your Express server. 
