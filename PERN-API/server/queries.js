@@ -8,53 +8,48 @@ const pool = new Pool({
   port: 5432,
 });
 
-
-const getLinks = (req, res) => {
-  pool.query('SELECT * FROM links ORDER BY id ASC', (error, result) => {
-    if (error) {
-      throw error;
-    }
-    res.status(200).json(result.rows);
-  });
+const getLinks = async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM links ORDER BY id ASC');
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error('Error fetching links:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-const createLink = (req, res) => {
+const createLink = async (req, res) => {
   const { title, url } = req.body;
-  pool.query(
-    'INSERT INTO links (title, url) VALUES ($1, $2)',
-    [title, url],
-    (error, result) => {
-      if (error) {
-        throw error;
-      }
-      res.status(201).send('Link created successfully');
-    }
-  );
+  try {
+    await pool.query('INSERT INTO links (title, url) VALUES ($1, $2)', [title, url]);
+    res.status(201).send('Link created successfully');
+  } catch (error) {
+    console.error('Error creating link:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-const updateLink = (req, res) => {
+const updateLink = async (req, res) => {
   const linkId = req.params.id;
   const { title, url } = req.body;
-  pool.query(
-    'UPDATE links SET title = $1, url = $2 WHERE id = $3',
-    [title, url, linkId],
-    (error, result) => {
-      if (error) {
-        throw error;
-      }
-      res.status(200).send('Link updated successfully');
-    }
-  );
+  try {
+    await pool.query('UPDATE links SET title = $1, url = $2 WHERE id = $3', [title, url, linkId]);
+    res.status(200).send('Link updated successfully');
+  } catch (error) {
+    console.error('Error updating link:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-const deleteLink = (req, res) => {
+const deleteLink = async (req, res) => {
   const linkId = req.params.id;
-  pool.query('DELETE FROM links WHERE id = $1', [linkId], (error, result) => {
-    if (error) {
-      throw error;
-    }
+  try {
+    await pool.query('DELETE FROM links WHERE id = $1', [linkId]);
     res.status(200).send('Link deleted successfully');
-  });
+  } catch (error) {
+    console.error('Error deleting link:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 module.exports = {
@@ -63,4 +58,5 @@ module.exports = {
   updateLink,
   deleteLink,
 };
+
 //With the corrected code, you have the getLinks, createLink, updateLink, and deleteLink functions defined as request handlers in your Express server. 
