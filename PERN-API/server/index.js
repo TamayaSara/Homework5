@@ -21,6 +21,7 @@ app.get('/', (req, res) => {
 
 //CRUD
 // CREATE - add data to db
+app.get('/links', db.getLinks);
 // READ - get data from db
 app.get('/links', db.getLinks)
 // UPDATE - update data in db
