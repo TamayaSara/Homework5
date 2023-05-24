@@ -25,8 +25,9 @@ app.get('/links', db.getLinks);
 // READ - get data from db
 app.post('/links', db.createLink); // Create - Add a new link
 app.get('/links', db.getLinks)
-// UPDATE - update data in db
-// DELETE - remove data from db
+app.put('/links/:id', db.updateLink); // Update - Update a link
+app.delete('/links/:id', db.deleteLink); // Delete - Remove a link
+
 
 // Starting Express on our PORT
 app.listen(PORT, () => {
